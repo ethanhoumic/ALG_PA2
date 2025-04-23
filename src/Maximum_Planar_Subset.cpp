@@ -20,7 +20,6 @@ vector<pair<int, int>> Maximum_Planar_Subset(vector<pair<int, int>> chords, int 
         match[chords[i].first] = chords[i].second;
         match[chords[i].second] = chords[i].first;
     }
-
     // checking the match array
     // cout << "match array: " << endl;
     // for (int i = 0; i < match.size(); ++i) {
@@ -38,9 +37,12 @@ vector<pair<int, int>> Maximum_Planar_Subset(vector<pair<int, int>> chords, int 
             int k = match[j];
             if (k < i || k > j) dp[i][j - i] = dp[i][j - 1 - i];
             else if (k == i) dp[i][j - i] = dp[i + 1][j - 1 - (i + 1)] + 1;
-            else dp[i][j - i] = max(dp[i][j - 1 - i], dp[k + 1][j - 1 - (k + 1)] + 1);
+            else dp[i][j - i] = max(dp[i][j - 1 - i], dp[i][k - 1 - i] + dp[k + 1][j - 1 - (k + 1)] + 1);
         }
     }
+
+    // checking the dp array
+    // cout << "dp array: " << dp[0][totalVertices - 1] << endl;
 
     vector<pair<int, int>> ans;
     return construct_ans(dp, match, 0, totalVertices - 1, ans);
@@ -55,10 +57,12 @@ vector<pair<int, int>> construct_ans(const vector<vector<int>>& dp, const vector
     int k = match[end];
     if (k < start || k > end) {
         construct_ans(dp, match, start, end - 1, ans);
-    } else if (k == start) {
+    }
+    else if (k == start) {
         ans.emplace_back(start, end);
         construct_ans(dp, match, start + 1, end - 1, ans);
-    } else {
+    }
+    else {
         int a = dp[start][end - 1 - start];
         int b = dp[k + 1][end - 1 - (k + 1)] + 1;
         if (dp[start][end - start] == a) {

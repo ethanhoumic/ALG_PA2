@@ -15,13 +15,18 @@
 using namespace std;
 #define ll long long
 
-void helpMessage() {
-    cout << "Input format error. Please use the correct format." << endl;
+void helpMessage(int errorCode) {
+    if (errorCode == 0) cout << "Error: incorrect # of Arguements. " << endl;
+    else if (errorCode == 1) cout << "Error: Failed to open input file." << endl;
+    else if (errorCode == 2) cout << "Error: Invalid total # of vertices. " << endl;
+    else if (errorCode == 3) cout << "Error: Start vertex not found. " << endl;
+    else if (errorCode == 4) cout << "Error: End vertex not found. " << endl;
+    else if (errorCode == 5) cout << "Error: Invalid vertex. " << endl;
 }
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
-        helpMessage();
+        helpMessage(0);
         return EXIT_FAILURE;
     }
 
@@ -30,10 +35,10 @@ int main(int argc, char* argv[]) {
 
     fstream fin(argv[1]);
     if (!fin) {
-        cerr << "Failed to open input file!" << endl;
+        helpMessage(1);
         return EXIT_FAILURE;
     }
-    else cout << "Input file: " << argv[1] << endl;
+    // else cout << "Input file: " << argv[1] << endl;
 
     fstream fout;
     fout.open(argv[2], ios::out);
@@ -43,7 +48,7 @@ int main(int argc, char* argv[]) {
     fin >> totalVertices;
     
     if (totalVertices % 2 != 0 || totalVertices > 180000) {
-        helpMessage();
+        helpMessage(2);
         return EXIT_FAILURE;
     }
 
@@ -52,17 +57,15 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < n; ++i) {
         int start, end;
         if (!(fin >> start)) {
-            cout << "Error: start vertex not found." << endl;
-            helpMessage();
+            helpMessage(3);
             break;
         }
         if (!(fin >> end)) {
-            cout << "Error: end vertex not found." << endl;
-            helpMessage();
+            helpMessage(4);
             break;
         }
         if (start < 0 || end < 0 || start > totalVertices || end > totalVertices) {
-            helpMessage();
+            helpMessage(5);
             return EXIT_FAILURE;
         }
         chords.emplace_back(start, end);
