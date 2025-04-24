@@ -43,6 +43,12 @@ vector<pair<int, int>> Maximum_Planar_Subset(vector<pair<int, int>> chords, int 
 
     // checking the dp array
     // cout << "dp array: " << dp[0][totalVertices - 1] << endl;
+    
+    // checking size of dp array
+    // cout << "dp size: " << dp.size() << " rows" << endl;
+    // size_t totalElements = 0;
+    // for (const auto& row : dp) totalElements += row.size();
+    // cout << "Total DP elements: " << totalElements << " (" << (totalElements * sizeof(int)) << " bytes)" << endl;
 
     vector<pair<int, int>> ans;
     return construct_ans(dp, match, 0, totalVertices - 1, ans);
