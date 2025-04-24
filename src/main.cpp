@@ -70,8 +70,6 @@ int main(int argc, char* argv[]) {
         }
         chords.emplace_back(start, end);
     }
-
-    tmusg.periodStart();
     
     vector<pair<int, int>> ans = Maximum_Planar_Subset(chords, totalVertices);
     fout << ans.size() << endl;
