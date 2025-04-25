@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <algorithm>
 #include <fstream>
 #include "../lib/tm_usage.h"
 #include "Maximum_Planar_Subset.h"
@@ -71,9 +72,10 @@ int main(int argc, char* argv[]) {
         chords.emplace_back(start, end);
     }
     
-    MPSolver solver(totalVertices, chords);
-    std::vector<std::pair<int, int>>result = solver.solve();
+    MaximumPlanarSubsetSolver solver(totalVertices, chords);
+    std::vector<std::pair<int, int>>result = solver.getSolution();
     fout << result.size() << endl;
+    sort(result.begin(), result.end());
     for (int i = 0; i < result.size(); ++i) {
         fout << result[i].first << " " << result[i].second << endl;
     }
