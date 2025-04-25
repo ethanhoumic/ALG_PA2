@@ -5,76 +5,58 @@
 // **************************************************************************
 #include "Maximum_Planar_Subset.h"
 #include <algorithm>
+#include <iostream>
 
 MPSolver::MPSolver(int totalVertices, const std::vector<std::pair<int, int>>& chords)
-    : totalVertices(totalVertices)
+    : totalVertices(totalVertices), match(totalVertices, -1)
 {
-    match = new int[totalVertices];
-    std::fill(match, match + totalVertices, -1);
-
     for (const auto& p : chords) {
         match[p.first] = p.second;
         match[p.second] = p.first;
     }
 
-    // 預先配置一維三角形陣列空間
-    int tri_size = (totalVertices * (totalVertices + 1)) / 2;
-    dp = new int[tri_size]();
-}
-
-MPSolver::~MPSolver() {
-    delete[] match;
-    delete[] dp;
-}
-
-inline int& MPSolver::DP(int i, int j) {
-    return dp[((2 * totalVertices - i + 1) * i) / 2 + (j - i)];
+    // 初始化三角形 DP 陣列
+    dp.reserve(totalVertices);
+    for (int i = 0; i < totalVertices; ++i)
+        dp.emplace_back(totalVertices - i, 0);
 }
 
 void MPSolver::computeDP() {
     for (int len = 1; len < totalVertices; ++len) {
-        for (int i = 0; i + len < totalVertices; ++i) {
+        for (int i = 0; i < totalVertices - len; ++i) {
             int j = i + len;
             int k = match[j];
-            if (k < i || k > j) {
-                DP(i, j) = DP(i, j - 1);
-            } else if (k == i) {
-                DP(i, j) = DP(i + 1, j - 1) + 1;
-            } else {
-                DP(i, j) = std::max(
-                    DP(i, j - 1),
-                    DP(i, k - 1) + DP(k + 1, j - 1) + 1
-                );
-            }
+            if (k < i || k > j) dp[i][len] = dp[i][len - 1];
+            else dp[i][len] = std::max(dp[i][len - 1], dp[i][k - 1 - i] + dp[k + 1][j - 1 - (k + 1)] + 1);
         }
     }
 }
 
-void MPSolver::constructAnswer(int i, int j, std::vector<std::pair<int, int>>& ans) {
-    if (i > j || DP(i, j) == 0) return;
+void MPSolver::constructAnswer(int i, int j) {
+    if (i > j || dp[i][j - i] == 0) return;
 
     int k = match[j];
     if (k < i || k > j) {
-        constructAnswer(i, j - 1, ans);
+        constructAnswer(i, j - 1);
     } else if (k == i) {
         ans.emplace_back(i, j);
-        constructAnswer(i + 1, j - 1, ans);
+        constructAnswer(i + 1, j - 1);
     } else {
-        if (DP(i, j) == DP(i, j - 1)) {
-            constructAnswer(i, j - 1, ans);
+        if (dp[i][j - i] == dp[i][j - 1 - i]) {
+            constructAnswer(i, j - 1);
         } else {
-            constructAnswer(i, k - 1, ans);
+            constructAnswer(i, k - 1);
             ans.emplace_back(k, j);
-            constructAnswer(k + 1, j - 1, ans);
+            constructAnswer(k + 1, j - 1);
         }
     }
 }
 
 std::vector<std::pair<int, int>> MPSolver::solve() {
     computeDP();
-    std::vector<std::pair<int, int>> ans;
-    constructAnswer(0, totalVertices - 1, ans);
+    constructAnswer(0, totalVertices - 1);
     return ans;
 }
+
 
 

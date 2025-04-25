@@ -12,18 +12,16 @@
 class MPSolver {
 public:
     MPSolver(int totalVertices, const std::vector<std::pair<int, int>>& chords);
-    ~MPSolver();
-
     std::vector<std::pair<int, int>> solve();
 
 private:
     int totalVertices;
-    int* match;
-    int* dp;
+    std::vector<int> match;
+    std::vector<std::vector<int>> dp;
+    std::vector<std::pair<int, int>> ans;
 
-    inline int& DP(int i, int j);
     void computeDP();
-    void constructAnswer(int i, int j, std::vector<std::pair<int, int>>& ans);
+    void constructAnswer(int i, int j);
 };
 
-#endif // MAXIMUM_PLANAR_SUBSET_H
+#endif
