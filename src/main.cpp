@@ -71,10 +71,11 @@ int main(int argc, char* argv[]) {
         chords.emplace_back(start, end);
     }
     
-    vector<pair<int, int>> ans = Maximum_Planar_Subset(chords, totalVertices);
-    fout << ans.size() << endl;
-    for (int i = 0; i < ans.size(); ++i) {
-        fout << ans[i].first << " " << ans[i].second << endl;
+    MPSolver solver(totalVertices, chords);
+    std::vector<std::pair<int, int>>result = solver.solve();
+    fout << result.size() << endl;
+    for (int i = 0; i < result.size(); ++i) {
+        fout << result[i].first << " " << result[i].second << endl;
     }
     tmusg.getPeriodUsage(stat);
     cout <<"The total CPU time: " << (stat.uTime + stat.sTime) / 1000.0 << "ms" << endl; // print CPU time
