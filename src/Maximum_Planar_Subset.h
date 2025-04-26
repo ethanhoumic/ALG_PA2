@@ -20,7 +20,7 @@ private:
     std::vector<std::vector<int>> dp;
     std::vector<std::pair<int, int>> ans;
 
-    void computeDP();
+    int topDown(int i, int j);
     void constructAnswer(int i, int j);
 };
 
